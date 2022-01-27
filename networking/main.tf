@@ -26,3 +26,17 @@ resource "aws_subnet" "mtc_public_subnet" {
     Name = "mtc_public_${count.index + 1}"
   }
 }
+  
+resource "aws_subnet" "mtc_private_subnet" {
+  count = length(var.private_cidrs)
+  vpc_id = aws_vpc.mtc_vps.id
+  cidr_block = var.private_cidrs[count.index]
+  map_public_ip_on_launch = false
+  availability_zone = ["us-west-2a", "us-west-2b", "us-west-2c", "us-west-2d"][count.index]
+  
+  tags = {
+   Name = "mtc_private_${count.index + 1}" 
+  }
+}  
+  
+  
