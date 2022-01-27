@@ -11,3 +11,11 @@ variable "public_cidrs" {
 variable "private_cidrs" {
     type = list
 }
+
+variable "public_sn_count" {
+    type = number
+}
+
+variable "private_sn_count" {
+    type = number
+}
