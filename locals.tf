@@ -6,7 +6,7 @@ locals {
   security_groups = {
     public = {
       name        = "public_sg"
-      description = "Security Group for Public Access"
+      description = "Public Access"
       ingress = {
         ssh = {
           from_port   = 22
@@ -18,6 +18,12 @@ locals {
           from_port   = 80
           to_port     = 80
           protocol    = "tcp"
+          cidr_blocks = ["0.0.0.0/0"]
+        }
+        nginx = {
+          from_port = 8000
+          to_port = 8000
+          protocol = "tcp"
           cidr_blocks = ["0.0.0.0/0"]
         }
       }
