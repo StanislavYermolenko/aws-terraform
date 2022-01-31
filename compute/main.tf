@@ -49,11 +49,32 @@ resource "aws_instance" "mtc_node" {
     volume_size = var.vol_size
 
   }
+  provisioner "remote-exec" {
+    connection {
+      type = "ssh"
+      user = "ubuntu"
+      host = self.public_ip
+      private_key = file("/home/ubuntu/.ssh/keymtc")
+    }
+    script = "${path.cwd}/delay.sh"
+  }
+
+  provisioner "local-exec" {
+    command = templatefile("${path.cwd}/scp_script.tpl",
+      {
+        nodeip   = self.public_ip
+        k3s_path = "${path.cwd}/../"
+        nodename = self.tags.Name
+      }
+    )
+  }
+
 }
 
+
 resource "aws_lb_target_group_attachment" "mtc_tg_attach" {
-  count = var.instance_count
+  count            = var.instance_count
   target_group_arn = var.lb_target_group_arn
-  target_id = aws_instance.mtc_node[count.index].id
-  port = var.tg_port
+  target_id        = aws_instance.mtc_node[count.index].id
+  port             = var.tg_port
 }
